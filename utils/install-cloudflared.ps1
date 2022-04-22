@@ -1,0 +1,2 @@
+winget.exe install --id Cloudflare.cloudflared --force --silent
+Get-ChildItem -r 'C:\Program Files (x86)' | Where-Object { $_.Name -match "cloudflared.exe" } | % { mv.exe $_.FullName $env:SystemRoot\\ }

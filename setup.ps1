@@ -75,6 +75,22 @@ else {
     Write-Error "ERROR: Google.Chrome is not installed!"
     exit
 }
+Start-Sleep -s 5
+echoBar
+
+Write-Host "Starting the install cloudflared..."
+powershell.exe -ExecutionPolicy RemoteSigned -File ./utils/install-cloudflared.ps1
+if (winget.exe list --id=Cloudflare.Cloudflared) {
+    echoBar
+    Write-Host "Done installing Cloudflare.Cloudflared!"
+    Write-Host "Version: "
+    winget.exe list --id=Cloudflare.Cloudflared
+}
+else {
+    echoBar
+    Write-Error "ERROR: Cloudflare.Cloudflared is not installed!"
+    exit
+}
 
 
 if (Test-Path $Profile) {
