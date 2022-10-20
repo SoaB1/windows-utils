@@ -1,3 +1,4 @@
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 function echoBar() {
     Write-Host "==============================="
 }
@@ -97,7 +98,3 @@ if (Test-Path $Profile) {
     Copy-Item -Force .\config\pwsh-profile.ps1 $Profile
 }
 Write-Host $Profile
-
-
-
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
