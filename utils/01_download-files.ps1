@@ -23,6 +23,31 @@ $files = @(
     @{
         Uri     = "https://prod-rel-ffc-ccm.oobesaas.adobe.com/adobe-ffc-external/core/v1/wam/download?sapCode=KCCC&productName=Creative%20Cloud"
         OutFile = "${BaseDir}\Creative_Cloud_Set-Up.exe"
+    },
+    # Tailscale
+    @{
+        Uri     = "https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe"
+        OutFile = "${BaseDir}\tailscale-setup-latest.exe"
+    },
+    # G Hub
+    @{
+        Uri = "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe"
+        OutFile = "${BaseDir}\lghub_installer.exe"
+    },
+    # Keyboard Driver
+    @{
+        Uri = "https://s3-gear-cdn.s3.ap-northeast-1.amazonaws.com/VSPO!+Keyboard_setup_2.1.89(WIN20250606).zip"
+        OutFile = "${BaseDir}\VSPO!+Keyboard_setup_2.1.89(WIN20250606).zip"
+    },
+    # Nvidia Driver
+    @{
+        Uri = "https://jp.download.nvidia.com/Windows/581.42/581.42-desktop-win10-win11-64bit-international-dch-whql.exe"
+        OutFile = "${BaseDir}\581.42-desktop-win10-win11-64bit-international-dch-whql.exe"
+    },
+    # Nvidia Broadcast
+    @{
+        Uri = "https://international.download.nvidia.com/Windows/broadcast/2.0.2/NVIDIA_Broadcast_v2.0.2.31240911.exe"
+        OutFile = "${BaseDir}\NVIDIA_Broadcast_v2.0.2.31240911.exe"
     }
 )
 
