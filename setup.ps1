@@ -8,7 +8,9 @@ $WingetPackages = @(
     "Google.Chrome",
     "7zip.7zip",
     "Starship.Starship",
-    "DeepL.DeepL"
+    "DeepL.DeepL",
+    "Nota.Gyazo",
+    "WinSCP.WinSCP"
 )
 
 # Main
