@@ -4,7 +4,7 @@ function echoBar() {
 }
 
 echoBar
-Write-Host "Starting the script for Setup Windows10..."
+Write-Host "Starting the script for Setup Windows11..."
 Start-Sleep -s 5
 if (winget --version) {
     Write-Host "Winget is already installed"
