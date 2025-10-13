@@ -1,11 +1,41 @@
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-function echoBar() {
-    Write-Host "==============================="
-}
 
+Import-Module "$PSScriptRoot\utils\common.psm1"
+
+# Variables
+$WingetPackages = @(
+    "Microsoft.VisualStudioCode",
+    "Google.Chrome",
+    "7zip.7zip",
+    "Starship.Starship",
+    "DeepL.DeepL"
+)
+
+# Main
 echoBar
 Write-Host "Starting the script for Setup Windows11..."
 Start-Sleep -s 5
+
+# Setup workspace
+$Folders = @(
+    "$PSScriptRoot\temp",
+    "$PSScriptRoot\logs"
+)
+
+foreach ($folder in $Folders) {
+    if (-Not (Test-Path -Path $folder)) {
+        New-Item -ItemType Directory -Path $folder -Force | Out-Null
+        Write-Host "Created folder: $folder"
+    } else {
+        Write-Host "Folder already exists: $folder"
+    }
+}
+
+# Logging
+$LogFile = "$PSScriptRoot\logs\setup-$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
+Start-Transcript -Path $LogFile -Append
+
+# Check if winget is installed
 if (winget --version) {
     Write-Host "Winget is already installed"
 }
@@ -15,86 +45,50 @@ else {
     Write-Host 'https://www.microsoft.com/p/app-installer/9nblggh4nns1#activetab=pivot:overviewtab'
     exit
 }
-echoBar
-Write-Host "Starting the install chocolatey..."
 Start-Sleep -s 5
-powershell.exe -ExecutionPolicy RemoteSigned -File ./utils/install-chocolatey.ps1
-Start-Sleep -s 5
-if (choco --version) {
-    echoBar
-    Write-Host "Done installing chocolatey!"
-    Write-Host -NoNewline "version: "
-    choco.exe --version
-}
-else {
-    echoBar
-    Write-Error "ERROR: Chocolatey is not installed!"
-    exit
-}
-Start-Sleep -s 5
-echoBar
-Write-Host "Starting the install Windows Terminal..."
-winget install --id=Microsoft.WindowsTerminal -e --silent
-if (winget list --id=Microsoft.WindowsTerminal) {
-    echoBar
-    Write-Host "Done installing Microsoft.WindowsTerminal!"
-    winget list --id=Microsoft.WindowsTerminal
-}
-else {
-    echoBar
-    Write-Error "ERROR: Microsoft.WindowsTerminal is not installed!"
-    exit
-}
-Start-Sleep -s 5
-echoBar
-Write-Host "Starting the install Visual Studio Code..."
-winget.exe install --id Microsoft.VisualStudioCode -e --silent
-if (winget list --id=Microsoft.VisualStudioCode) {
-    echoBar
-    Write-Host "Done installing Microsoft.VisualStudioCode!"
-    Write-Host "Version: "
-    winget list --id=Microsoft.VisualStudioCode
-}
-else {
-    echoBar
-    Write-Error "ERROR: Microsoft.VisualStudioCode is not installed!"
-    exit
-}
-Start-Sleep -s 5
-echoBar
 
-Write-Host "Starting the install GoogleChrome..."
-winget.exe install --id Google.Chrome -e --silent
-if (winget.exe list --id=Google.Chrome) {
+# Install packages
+foreach ($package in $WingetPackages) {
     echoBar
-    Write-Host "Done installing Google.Chrome!"
-    Write-Host "Version: "
-    winget.exe list --id=Google.Chrome
-}
-else {
-    echoBar
-    Write-Error "ERROR: Google.Chrome is not installed!"
-    exit
-}
-Start-Sleep -s 5
-echoBar
-
-Write-Host "Starting the install cloudflared..."
-powershell.exe -ExecutionPolicy RemoteSigned -File ./utils/install-cloudflared.ps1
-if (winget.exe list --id=Cloudflare.Cloudflared) {
-    echoBar
-    Write-Host "Done installing Cloudflare.Cloudflared!"
-    Write-Host "Version: "
-    winget.exe list --id=Cloudflare.Cloudflared
-}
-else {
-    echoBar
-    Write-Error "ERROR: Cloudflare.Cloudflared is not installed!"
-    exit
+    Write-Host "Starting the install $package..."
+    if (winget list --id=$package) {
+        Write-Host "$package is already installed"
+        winget list --id=$package
+    } else {
+        Write-Host "$package is not installed, installing..."
+        try {
+            winget.exe install --id $package -e --silent
+            winget list --id=$package
+        }
+        catch {
+            Write-Error "ERROR: Failed to install $package"
+        }
+    }
+    Start-Sleep -s 5
 }
 
-
-if (Test-Path $Profile) {
-    Copy-Item -Force .\config\pwsh-profile.ps1 $Profile
+# Install WSL
+echoBar
+Write-Host "Starting the install WSL..."
+if (wsl --version) {
+    Write-Host "WSL is already installed"
+    wsl --version
+} else {
+    Write-Host "WSL is not installed, installing..."
+    try {
+        wsl --install
+        wsl --version
+    }
+    catch {
+        Write-Error "ERROR: Failed to install WSL"
+    }
 }
-Write-Host $Profile
+
+# Download other installers
+echoBar
+Write-Host "Starting the download other installers..."
+Invoke-Expression "$PSScriptRoot\utils\01_download-files.ps1"
+
+# Finish
+Stop-Transcript
+Write-Host "Setup script completed. Log file saved:`n$LogFile"
