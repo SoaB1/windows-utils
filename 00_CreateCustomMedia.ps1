@@ -51,7 +51,7 @@ if (!(Test-Path $SourceIsoPath)) {
 }
 
 if (!(Test-Path $ExportIsoPath)) {
-    Write-Host "エクスポート先フォルダが存在しません。フォルダを作成します: $ExportIsoPath" -ForegroundColor Yellow
+    Write-Host "警告: エクスポート先フォルダが存在しません。フォルダを作成します: $ExportIsoPath" -ForegroundColor Yellow
     New-Item -ItemType Directory -Path $ExportIsoPath | Out-Null
 }
 
@@ -60,8 +60,8 @@ Start-Sleep -Seconds 5
 
 # ISO 展開用の一時フォルダを作成
 try {
-    Write-Host "ISO を展開中: $SourceIsoPath" -ForegroundColor Green
-    Start-Process -FilePath "7z.exe" -ArgumentList "x -spf -o`"${TempPath}`" `"$SourceIsoPath`"" -NoNewWindow -Wait
+    Write-Host "情報: ISO を展開中: $SourceIsoPath" -ForegroundColor Green
+    Start-Process -FilePath "7z.exe" -ArgumentList "x -bso0 -spf -o`"${TempPath}`" `"$SourceIsoPath`"" -NoNewWindow -Wait > $null
 }
 catch {
     Write-Host "エラー: ISO の展開に失敗しました。 : $_" -ForegroundColor Red
@@ -69,11 +69,36 @@ catch {
 }
 
 if (Test-Path $AutounattendPath) {
-    Copy-Item -Path $AutounattendPath -Destination (Join-Path -Path $TempPath -ChildPath "Autounattend.xml") -Force
-    Write-Host "Autounattend.xml をコピーしました。" -ForegroundColor Green
+    try {
+        Copy-Item -Path $AutounattendPath -Destination (Join-Path -Path $TempPath -ChildPath "Autounattend.xml") -Force
+        Write-Host "情報: 応答ファイルをコピーしました。: Autounattend.xml" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "エラー: 応答ファイルのコピーに失敗しました。 : $_" -ForegroundColor Red
+        exit 1
+    }
 }
 else {
     Write-Host "警告: Autounattend.xml が見つかりません。カスタム設定は適用されません。" -ForegroundColor Yellow
+}
+
+$ScriptArry = @(
+    "01_ConfigureNetwork.ps1"
+    "config\01_ConfigureNetwork.json"
+)
+
+if (!(Test-Path -Path "$TempPath\scripts\config")) {
+    New-Item -ItemType Directory -Path "$TempPath\scripts\config" | Out-Null
+}
+
+foreach ($script in $ScriptArry) {
+    try {
+        Copy-Item -Path (Join-Path -Path "$WorkDir" -ChildPath $script) -Destination (Join-Path -Path "$TempPath\scripts" -ChildPath $script) -Force
+    }
+    catch {
+        Write-Host "エラー: スクリプトのコピーに失敗しました: $($_.Exception.Message)" -ForegroundColor Red
+    }
+    Write-Host "情報: スクリプトをコピーしました: $script" -ForegroundColor Green
 }
 
 Write-Host ""
@@ -81,7 +106,7 @@ Start-Sleep -Seconds 5
 
 # ISO 作成コマンドを実行
 try {
-    Write-Host "カスタム ISO を作成中: $IsoFile" -ForegroundColor Green
+    Write-Host "情報: カスタム ISO を作成中: $IsoFile" -ForegroundColor Green
     Start-Process -FilePath $ExecFile -ArgumentList "$CommandOptions `"$IsoBaseDir`" `"$IsoFile`"" -WorkingDirectory $TempPath -NoNewWindow -Wait
 }
 catch {
@@ -90,7 +115,7 @@ catch {
 }
 
 if (Test-Path $IsoFile) {
-    Write-Host "カスタム ISO が正常に作成されました: $IsoFile" -ForegroundColor Green
+    Write-Host "情報: カスタム ISO が正常に作成されました: $IsoFile" -ForegroundColor Green
     Remove-Item -Path $TempPath -Recurse -Force
 }
 else {
