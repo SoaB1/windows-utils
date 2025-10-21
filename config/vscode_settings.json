@@ -1,0 +1,91 @@
+{
+  "editor.renderControlCharacters": true,
+  "editor.renderWhitespace": "all",
+  "workbench.iconTheme": "material-icon-theme",
+  "vsicons.dontShowNewVersionMessage": true,
+  "notebook.cellToolbarLocation": {
+    "default": "right"
+  },
+  "security.workspace.trust.untrustedFiles": "open",
+  "remote.SSH.showLoginTerminal": true,
+  "workbench.startupEditor": "none",
+  "git.ignoreLegacyWarning": true,
+  "explorer.confirmDragAndDrop": false,
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "workbench.colorTheme": "Dracula Theme",
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": true,
+    "markdown": "true",
+    "scminput": false,
+    "yaml": "true",
+    "javascript": true,
+    "dockerfile": true
+  },
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "files.autoGuessEncoding": true,
+  "editor.inlineSuggest.enabled": true,
+  "git.confirmSync": false,
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "git.autofetch": true,
+  "terminal.integrated.fontFamily": "'CaskaydiaCove Nerd Font'",
+  "redhat.telemetry.enabled": true,
+  "terminal.integrated.shellIntegration.decorationsEnabled": "never",
+  "terminal.integrated.shellIntegration.decorationIcon": "\"\"",
+  "terminal.integrated.shellIntegration.decorationIconError": "\"\"",
+  "terminal.integrated.shellIntegration.decorationIconSuccess": "\"\"",
+  "indentRainbow.colors": [
+    "rgba(255,255,64,0.2)",
+    "rgba(127,255,127,0.2)",
+    "rgba(255,127,255,0.2)",
+    "rgba(79,236,236,0.2)"
+  ],
+  "remoteHub.commitDirectlyWarning": "off",
+  "powershell.promptToUpdatePowerShell": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.formatOnSave": true,
+  "[python]": {
+    "editor.formatOnType": true
+  },
+  "[dockerfile]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    }
+  },
+  "[shellscript]": {
+    "files.eol": "\n"
+  },
+  "hediet.vscode-drawio.resizeImages": null,
+  "workbench.editor.empty.hint": "hidden",
+  "files.insertFinalNewline": true,
+  "github.copilot.chat.localeOverride": "ja",
+  "files.eol": "\n",
+  "security.allowedUNCHosts": ["mnet-nas-01"],
+  "git.ignoreRebaseWarning": true,
+  "editor.accessibilitySupport": "off",
+  "explorer.confirmDelete": false,
+  "docker.extension.enableComposeLanguageServer": false,
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.currentLine.enabled": false,
+  "gitlens.codeLens.enabled": false,
+  "[dockercompose]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.autoIndent": "advanced",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "powershell.powerShellDefaultVersion": "PowerShell7",
+  "powershell.powerShellAdditionalExePaths": {
+    "PowerShell7": ""
+  },
+  "powershell.integratedConsole.suppressStartupBanner": true
+}
