@@ -28,7 +28,8 @@ foreach ($folder in $Folders) {
     if (-Not (Test-Path -Path $folder)) {
         New-Item -ItemType Directory -Path $folder -Force | Out-Null
         Write-Host "Created folder: $folder"
-    } else {
+    }
+    else {
         Write-Host "Folder already exists: $folder"
     }
 }
@@ -56,7 +57,8 @@ foreach ($package in $WingetPackages) {
     if (winget list --id=$package) {
         Write-Host "$package is already installed"
         winget list --id=$package
-    } else {
+    }
+    else {
         Write-Host "$package is not installed, installing..."
         try {
             winget.exe install --id $package -e --silent
@@ -75,7 +77,8 @@ Write-Host "Starting the install WSL..."
 if (wsl --version) {
     Write-Host "WSL is already installed"
     wsl --version
-} else {
+}
+else {
     Write-Host "WSL is not installed, installing..."
     try {
         wsl --install
@@ -89,7 +92,12 @@ if (wsl --version) {
 # Download other installers
 echoBar
 Write-Host "Starting the download other installers..."
-Invoke-Expression "$PSScriptRoot\utils\01_download-files.ps1"
+Start-Process -FilePath "$PSScriptRoot\utils\01_DownloadFiles.ps1" -Wait
+
+# Configure Applications
+echoBar
+Write-Host "Starting the configure applications..."
+Start-Process -FilePath "$PSScriptRoot\utils\02_ConfigureApplication.ps1" -Wait
 
 # Finish
 Stop-Transcript
