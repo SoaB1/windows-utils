@@ -1,0 +1,45 @@
+// 既定値を上書きするには、このファイル内にキー バインドを挿入しますauto[]
+[
+  {
+    "key": "ctrl+shift+l",
+    "command": "markdown.showPreviewToSide",
+    "when": "!notebookEditorFocused && editorLangId == 'markdown'"
+  },
+  {
+    "key": "ctrl+k v",
+    "command": "-markdown.showPreviewToSide",
+    "when": "!notebookEditorFocused && editorLangId == 'markdown'"
+  },
+  {
+    "key": "shift+alt+pagedown",
+    "command": "editor.action.transformToLowercase",
+    "when": "editorHasSelection && editorTextFocus"
+  },
+  {
+    "key": "shift+alt+pageup",
+    "command": "editor.action.transformToUppercase",
+    "when": "editorHasSelection && editorTextFocus"
+  },
+  {
+    "key": "ctrl+alt+oem_7",
+    "command": "git.stageSelectedRanges",
+    "when": "isInDiffEditor && !operationInProgress"
+  },
+  {
+    "key": "ctrl+k ctrl+alt+s",
+    "command": "-git.stageSelectedRanges",
+    "when": "isInDiffEditor && !operationInProgress"
+  },
+  {
+    "key": "alt+win+enter",
+    "command": "workbench.files.action.compareFileWith"
+  },
+  {
+    "key": "ctrl+shift+9",
+    "command": "workbench.action.files.saveWithoutFormatting"
+  },
+  {
+    "key": "ctrl+k ctrl+shift+s",
+    "command": "-workbench.action.files.saveWithoutFormatting"
+  }
+]
