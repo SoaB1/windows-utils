@@ -4,82 +4,82 @@ param (
 )
 
 if ((-not $SourceIsoPath) -or (-not $ExportIsoPath)) {
-    Write-Host "g—p•û–@: .\00_CreateCustomMedia.ps1 -SourceIsoPath <ƒ\[ƒXISO‚ÌƒpƒX> -ExportIsoPath <ƒGƒNƒXƒ|[ƒgæƒtƒHƒ‹ƒ_‚ÌƒpƒX>" -ForegroundColor Yellow
+    Write-Host "ä½¿ç”¨æ–¹æ³•: .\00_CreateCustomMedia.ps1 -SourceIsoPath <ã‚½ãƒ¼ã‚¹ISOã®ãƒ‘ã‚¹> -ExportIsoPath <ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆå…ˆãƒ•ã‚©ãƒ«ãƒ€ã®ãƒ‘ã‚¹>" -ForegroundColor Yellow
     exit 1
 }
 
-### •Ï”
-# ì¬“ú‚ğæ“¾
+### å¤‰æ•°
+# ä½œæˆæ—¥ã‚’å–å¾—
 $WorkDir = Get-Location
 $CurrentDate = Get-Date -Format "yyyyMMdd"
-# Autounattend.xml‚ÌƒpƒX
+# Autounattend.xmlã®ãƒ‘ã‚¹
 $AutounattendPath = Join-Path -Path "${WorkDir}\config" -ChildPath "Autounattend.xml"
 
-## ISO ‰ğ“€—p•Ï”
-# ISO “WŠJ—p‚ÌˆêƒtƒHƒ‹ƒ_‚ğİ’è
+## ISO è§£å‡ç”¨å¤‰æ•°
+# ISO å±•é–‹ç”¨ã®ä¸€æ™‚ãƒ•ã‚©ãƒ«ãƒ€ã‚’è¨­å®š
 $TempPath = $SourceIsoPath.Replace('.iso', '')
 
-## ƒJƒXƒ^ƒ€ISOì¬—p•Ï”
-# ì¬‚·‚é ISO ƒtƒ@ƒCƒ‹‚Ì–¼‘O‚ğİ’è
+## ã‚«ã‚¹ã‚¿ãƒ ISOä½œæˆç”¨å¤‰æ•°
+# ä½œæˆã™ã‚‹ ISO ãƒ•ã‚¡ã‚¤ãƒ«ã®åå‰ã‚’è¨­å®š
 $ExportIsoFile = "custom_windows11_25H2_x64_${CurrentDate}.iso"
-# ISO ƒtƒ@ƒCƒ‹‚Ìƒtƒ‹ƒpƒX‚ğİ’è
+# ISO ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ•ãƒ«ãƒ‘ã‚¹ã‚’è¨­å®š
 $IsoFile = Join-Path -Path $ExportIsoPath -ChildPath $ExportIsoFile
-# ISO ‚É‚·‚éƒtƒHƒ‹ƒ_ (ƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠ) ‚ğİ’è
+# ISO ã«ã™ã‚‹ãƒ•ã‚©ãƒ«ãƒ€ (ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª) ã‚’è¨­å®š
 $IsoBaseDir = "."
-# oscdimg.exe ‚ÌƒpƒX‚ğİ’è (Windows ADK ‚Ìƒc[ƒ‹‚ğg—p)
-# ƒA[ƒLƒeƒNƒ`ƒƒ‚ğ¬•¶š‚Åæ“¾
+# oscdimg.exe ã®ãƒ‘ã‚¹ã‚’è¨­å®š (Windows ADK ã®ãƒ„ãƒ¼ãƒ«ã‚’ä½¿ç”¨)
+# ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã‚’å°æ–‡å­—ã§å–å¾—
 $arch = $env:PROCESSOR_ARCHITECTURE.ToLower()
 $ExecFile = "C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Deployment Tools\${arch}\Oscdimg\oscdimg.exe"
-# ISO ‚Ìƒu[ƒgƒZƒNƒ^[—p‚Ìƒtƒ@ƒCƒ‹‚ğİ’è
+# ISO ã®ãƒ–ãƒ¼ãƒˆã‚»ã‚¯ã‚¿ãƒ¼ç”¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¨­å®š
 $IsoEtfsboot = "boot\etfsboot.com"
-# UEFI ƒu[ƒg—p‚Ìƒtƒ@ƒCƒ‹‚ğİ’è
+# UEFI ãƒ–ãƒ¼ãƒˆç”¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¨­å®š
 $IsoEfisys = "efi\microsoft\boot\efisys.bin"
-# ISO ì¬ƒRƒ}ƒ“ƒh‚ğ\’z
+# ISO ä½œæˆã‚³ãƒãƒ³ãƒ‰ã‚’æ§‹ç¯‰
 $CommandOptions = "-m -o -u2 -udfver102 -bootdata:2#p0,e,b${IsoEtfsboot}#pEF,e,b${IsoEfisys}"
 
 ### Main
 if (!(Test-Path $ExecFile)) {
-    Write-Host "ƒGƒ‰[: oscdimg.exe ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñBƒpƒX‚ğŠm”F‚µ‚Ä‚­‚¾‚³‚¢B" -ForegroundColor Red
-    Write-Host "w’è‚³‚ê‚½ƒpƒX: $ExecFile" -ForegroundColor Red
+    Write-Host "ã‚¨ãƒ©ãƒ¼: oscdimg.exe ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚ãƒ‘ã‚¹ã‚’ç¢ºèªã—ã¦ãã ã•ã„ã€‚" -ForegroundColor Red
+    Write-Host "æŒ‡å®šã•ã‚ŒãŸãƒ‘ã‚¹: $ExecFile" -ForegroundColor Red
     exit 1
 }
 
 if (!(Test-Path $SourceIsoPath)) {
-    Write-Host "ƒGƒ‰[: ƒ\[ƒX ISO ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñBƒpƒX‚ğŠm”F‚µ‚Ä‚­‚¾‚³‚¢B" -ForegroundColor Red
-    Write-Host "w’è‚³‚ê‚½ƒpƒX: $SourceIsoPath" -ForegroundColor Red
+    Write-Host "ã‚¨ãƒ©ãƒ¼: ã‚½ãƒ¼ã‚¹ ISO ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚ãƒ‘ã‚¹ã‚’ç¢ºèªã—ã¦ãã ã•ã„ã€‚" -ForegroundColor Red
+    Write-Host "æŒ‡å®šã•ã‚ŒãŸãƒ‘ã‚¹: $SourceIsoPath" -ForegroundColor Red
     exit 1
 }
 
 if (!(Test-Path $ExportIsoPath)) {
-    Write-Host "Œx: ƒGƒNƒXƒ|[ƒgæƒtƒHƒ‹ƒ_‚ª‘¶İ‚µ‚Ü‚¹‚ñBƒtƒHƒ‹ƒ_‚ğì¬‚µ‚Ü‚·: $ExportIsoPath" -ForegroundColor Yellow
+    Write-Host "è­¦å‘Š: ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆå…ˆãƒ•ã‚©ãƒ«ãƒ€ãŒå­˜åœ¨ã—ã¾ã›ã‚“ã€‚ãƒ•ã‚©ãƒ«ãƒ€ã‚’ä½œæˆã—ã¾ã™: $ExportIsoPath" -ForegroundColor Yellow
     New-Item -ItemType Directory -Path $ExportIsoPath | Out-Null
 }
 
 Write-Host ""
 Start-Sleep -Seconds 5
 
-# ISO “WŠJ—p‚ÌˆêƒtƒHƒ‹ƒ_‚ğì¬
+# ISO å±•é–‹ç”¨ã®ä¸€æ™‚ãƒ•ã‚©ãƒ«ãƒ€ã‚’ä½œæˆ
 try {
-    Write-Host "î•ñ: ISO ‚ğ“WŠJ’†: $SourceIsoPath" -ForegroundColor Green
+    Write-Host "æƒ…å ±: ISO ã‚’å±•é–‹ä¸­: $SourceIsoPath" -ForegroundColor Green
     Start-Process -FilePath "7z.exe" -ArgumentList "x -bso0 -spf -o`"${TempPath}`" `"$SourceIsoPath`"" -NoNewWindow -Wait > $null
 }
 catch {
-    Write-Host "ƒGƒ‰[: ISO ‚Ì“WŠJ‚É¸”s‚µ‚Ü‚µ‚½B : $_" -ForegroundColor Red
+    Write-Host "ã‚¨ãƒ©ãƒ¼: ISO ã®å±•é–‹ã«å¤±æ•—ã—ã¾ã—ãŸã€‚ : $_" -ForegroundColor Red
     exit 1
 }
 
 if (Test-Path $AutounattendPath) {
     try {
         Copy-Item -Path $AutounattendPath -Destination (Join-Path -Path $TempPath -ChildPath "Autounattend.xml") -Force
-        Write-Host "î•ñ: ‰“šƒtƒ@ƒCƒ‹‚ğƒRƒs[‚µ‚Ü‚µ‚½B: Autounattend.xml" -ForegroundColor Green
+        Write-Host "æƒ…å ±: å¿œç­”ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚³ãƒ”ãƒ¼ã—ã¾ã—ãŸã€‚: Autounattend.xml" -ForegroundColor Green
     }
     catch {
-        Write-Host "ƒGƒ‰[: ‰“šƒtƒ@ƒCƒ‹‚ÌƒRƒs[‚É¸”s‚µ‚Ü‚µ‚½B : $_" -ForegroundColor Red
+        Write-Host "ã‚¨ãƒ©ãƒ¼: å¿œç­”ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚³ãƒ”ãƒ¼ã«å¤±æ•—ã—ã¾ã—ãŸã€‚ : $_" -ForegroundColor Red
         exit 1
     }
 }
 else {
-    Write-Host "Œx: Autounattend.xml ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñBƒJƒXƒ^ƒ€İ’è‚Í“K—p‚³‚ê‚Ü‚¹‚ñB" -ForegroundColor Yellow
+    Write-Host "è­¦å‘Š: Autounattend.xml ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚ã‚«ã‚¹ã‚¿ãƒ è¨­å®šã¯é©ç”¨ã•ã‚Œã¾ã›ã‚“ã€‚" -ForegroundColor Yellow
 }
 
 $ScriptArry = @(
@@ -96,32 +96,32 @@ foreach ($script in $ScriptArry) {
         Copy-Item -Path (Join-Path -Path "$WorkDir" -ChildPath $script) -Destination (Join-Path -Path "$TempPath\scripts" -ChildPath $script) -Force
     }
     catch {
-        Write-Host "ƒGƒ‰[: ƒXƒNƒŠƒvƒg‚ÌƒRƒs[‚É¸”s‚µ‚Ü‚µ‚½: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "ã‚¨ãƒ©ãƒ¼: ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®ã‚³ãƒ”ãƒ¼ã«å¤±æ•—ã—ã¾ã—ãŸ: $($_.Exception.Message)" -ForegroundColor Red
     }
-    Write-Host "î•ñ: ƒXƒNƒŠƒvƒg‚ğƒRƒs[‚µ‚Ü‚µ‚½: $script" -ForegroundColor Green
+    Write-Host "æƒ…å ±: ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’ã‚³ãƒ”ãƒ¼ã—ã¾ã—ãŸ: $script" -ForegroundColor Green
 }
 
 Write-Host ""
 Start-Sleep -Seconds 5
 
-# ISO ì¬ƒRƒ}ƒ“ƒh‚ğÀs
+# ISO ä½œæˆã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œ
 try {
-    Write-Host "î•ñ: ƒJƒXƒ^ƒ€ ISO ‚ğì¬’†: $IsoFile" -ForegroundColor Green
+    Write-Host "æƒ…å ±: ã‚«ã‚¹ã‚¿ãƒ  ISO ã‚’ä½œæˆä¸­: $IsoFile" -ForegroundColor Green
     Start-Process -FilePath $ExecFile -ArgumentList "$CommandOptions `"$IsoBaseDir`" `"$IsoFile`"" -WorkingDirectory $TempPath -NoNewWindow -Wait
 }
 catch {
-    Write-Host "ƒGƒ‰[: ƒJƒXƒ^ƒ€ ISO ‚Ìì¬‚É¸”s‚µ‚Ü‚µ‚½B : $_" -ForegroundColor Red
+    Write-Host "ã‚¨ãƒ©ãƒ¼: ã‚«ã‚¹ã‚¿ãƒ  ISO ã®ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸã€‚ : $_" -ForegroundColor Red
     exit 1
 }
 
 if (Test-Path $IsoFile) {
-    Write-Host "î•ñ: ƒJƒXƒ^ƒ€ ISO ‚ª³í‚Éì¬‚³‚ê‚Ü‚µ‚½: $IsoFile" -ForegroundColor Green
+    Write-Host "æƒ…å ±: ã‚«ã‚¹ã‚¿ãƒ  ISO ãŒæ­£å¸¸ã«ä½œæˆã•ã‚Œã¾ã—ãŸ: $IsoFile" -ForegroundColor Green
     Remove-Item -Path $TempPath -Recurse -Force
 }
 else {
-    Write-Host "ƒGƒ‰[: ƒJƒXƒ^ƒ€ ISO ‚Ìì¬‚É¸”s‚µ‚Ü‚µ‚½B" -ForegroundColor Red
+    Write-Host "ã‚¨ãƒ©ãƒ¼: ã‚«ã‚¹ã‚¿ãƒ  ISO ã®ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸã€‚" -ForegroundColor Red
     exit 1
 }
 
-# ˆ—‚ªI—¹‚µ‚½‚±‚Æ‚ğŠm”F‚·‚é‚½‚ßAˆê’â~
-Read-Host -Prompt "ˆ—‚ªŠ®—¹‚µ‚Ü‚µ‚½BEnterƒL[‚ğ‰Ÿ‚µ‚ÄI—¹‚µ‚Ü‚·"
+# å‡¦ç†ãŒçµ‚äº†ã—ãŸã“ã¨ã‚’ç¢ºèªã™ã‚‹ãŸã‚ã€ä¸€æ™‚åœæ­¢
+Read-Host -Prompt "å‡¦ç†ãŒå®Œäº†ã—ã¾ã—ãŸã€‚Enterã‚­ãƒ¼ã‚’æŠ¼ã—ã¦çµ‚äº†ã—ã¾ã™"
