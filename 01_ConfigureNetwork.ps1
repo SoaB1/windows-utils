@@ -45,7 +45,7 @@ if ($IsDefault -eq $true) {
         Write-Error "Failed to configure the Default adapter: $_"
     }
     finally {
-        Start-Sleep -Seconds 30
+        Start-Sleep -Seconds 10
         Get-NetIPConfiguration -InterfaceAlias $NewName
     }
 }
@@ -65,7 +65,7 @@ else {
         Write-Error "Failed to configure the Default adapter: $_"
     }
     finally {
-        Start-Sleep -Seconds 30
+        Start-Sleep -Seconds 10
         Get-NetIPConfiguration -InterfaceAlias $NewName
     }
 }
